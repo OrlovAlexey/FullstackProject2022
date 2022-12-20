@@ -1,15 +1,24 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import {createNote} from '../../../actions/projectActions'
+import {connect} from 'react-redux'
+import classnames from 'classnames'
 
 class CreateNote extends Component {
     constructor(props) {
-      super(props)
-    
-      this.state = {
-        name: '',
-        description: '',
-        priority: ''
-      }
+        super(props)
+
+        this.state = {
+            name: '',
+            description: '',
+            priority: '',
+            errors:''
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.errors){
+            this.setState({errors:nextProps.errors})
+        }
     }
 
     changeHandler = (event, fieldName) => {
@@ -24,12 +33,7 @@ class CreateNote extends Component {
             description: this.state.description,
             priority: this.state.priority
         }
-        axios.post('http://localhost:8080/easynote', newNote)
-            .then((res)=>{
-                alert("Success")
-            }).catch((err)=>{
-                alert("Error")
-            })
+        this.props.createNote(newNote, this.props.history)
         event.preventDefault()
     }
 
@@ -42,14 +46,16 @@ class CreateNote extends Component {
                             <h5 className="display-4 text-center">Create Note</h5>
                             <form onSubmit={(event)=>this.submitHandler(event)}>
                                 <div className="form-group mt-5">
-                                    <input type="text" onChange={(event)=>this.changeHandler(event, "name")} className="form-control form-control-lg " placeholder="Note Name" />
+                                    <input type="text" onChange={(event) => this.changeHandler(event, "name")} className={classnames("form-control form-control-lg",{"is-invalid":this.state.errors.name})} placeholder="Note Name" />
+                                    <p className="text-danger">{this.state.errors.name}</p>
                                 </div>
                                 <div className="form-group mt-2">
-                                    <textarea onChange={(event)=>this.changeHandler(event, "description")} className="form-control form-control-lg" placeholder="Note Body"></textarea>
+                                    <textarea onChange={(event) => this.changeHandler(event, "description")} className={classnames("form-control form-control-lg",{"is-invalid":this.state.errors.description})} placeholder="Note Body"></textarea>
+                                    <p className="text-danger">{this.state.errors.description}</p>
                                 </div>
                                 <div className="form-group mt-2">
-                                    <select className="form-control form-control-lg" onChange={(event)=>this.changeHandler(event, "priority")} >
-                                        <option value={3}>Display Priority</option>
+                                    <select className="form-control form-control-lg" onChange={(event) => this.changeHandler(event, "priority")} defaultValue={0}>
+                                        <option value={0} disabled>Choose Priority</option>
                                         <option value={1}>High</option>
                                         <option value={2}>Medium</option>
                                         <option value={3}>Low</option>
@@ -61,9 +67,12 @@ class CreateNote extends Component {
                     </div>
                 </div>
             </div>
-
         )
     }
 }
 
-export default CreateNote
+const mapStateToProps = (state) =>({
+    errors:state.errors
+})
+
+export default connect(mapStateToProps, {createNote})(CreateNote)

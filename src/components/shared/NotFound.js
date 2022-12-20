@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 
-class PageNotFound extends Component {
+class NotFound extends Component {
     render() {
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-md-3">
-                        <img src="error_page_not_found.jpg" className="not-found-img" />
+                        <img src="error_page_not_found.jpg" className="not-found-img" alt="not found"/>
                     </div>
                     <div className="col-md-3">
                         <div className="error-template">
@@ -22,4 +22,4 @@ class PageNotFound extends Component {
     }
 }
 
-export default PageNotFound
+export default NotFound

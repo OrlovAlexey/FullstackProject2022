@@ -1,32 +1,41 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import {deleteNote} from '../../actions/projectActions'
+import {connect} from 'react-redux'
 
 class DashboardItem extends Component {
+    deleteBtnClick = () =>{
+        if(window.confirm("Are you use, you wan to delete this note")){
+            this.props.deleteNote(this.props.note.id)
+        }
+    }
     render() {
+        const note = this.props.note
         return (
             <div className="container">
                 <div className="card card-body bg-light mb-3">
                     <div className="row" >
                         <div className="col-md-10">
-                            <h3>Example Note</h3>
-                            <p>Sample Text</p>
+                            <h3>{note.name}</h3>
+                            <p>{note.description}</p>
                         </div>
                         <div className="col-md-2 d-lg-block">
                             <ul className="list-group">
-                                <a href="transactions.html">
+                                <Link to={'/dashboard'}>
                                     <li className="list-group-item board text-success">
-                                        <b className="fa fa-flag-checkered pr-1"> Copy</b>
+                                        <i className="fa pr-1"> Copy </i>
                                     </li>
-                                </a>
-                                <a href="walletForm.html">
-                                    <li className="list-group-item update text-secondary">
-                                        <b className="fa fa-edit pr-1"> Edit</b>
+                                </Link>
+                                <Link to={`/updatenote/${note.id}`}>
+                                    <li className="list-group-item update text-info">
+                                        <i className="fa pr-1"> Edit </i>
                                     </li>
-                                </a>
-                                <a href="">
+                                </Link>
+                                <Link to="/dashboard" onClick={()=>this.deleteBtnClick()}>
                                     <li className="list-group-item delete text-danger">
-                                        <b className="fa fa-minus-circle pr-1"> Delete</b>
+                                        <i className="fa pr-1"> Delete </i>
                                     </li>
-                                </a>
+                                </Link>
                             </ul>
                         </div>
                     </div>
@@ -36,4 +45,4 @@ class DashboardItem extends Component {
     }
 }
 
-export default DashboardItem
+export default connect(null,{deleteNote})(DashboardItem)
